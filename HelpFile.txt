@@ -1,0 +1,243 @@
+Cancer Intervention and Surveillance Modeling Network
+(CISNET)
+Lung Cancer Base Case
+
+Smoking History Generator Application
+Version 6.2.3
+
+Important Note regarding Version  5.2.1 and later versions:
+The use of immediate cessation has changed with this release.
+To apply immediatte cessation, the year for immediate cessation must now be supplied to the application.
+The year value is now supplied as the last input parameter (See Section 2 below).
+If the year value supplied is '0', immediate cessation will not be used in the run.
+If a year value is supplied, Immediatte Cessation will occur on January 1st of year provided.
+
+Section 1: Usage
+
+1. User Interface Mode
+Type:  C:\CISNET\CISNET_LBC_SmokingHistoryGenerator\lbc_smokehist.exe
+
+2a. Command Line Mode (w/o specified cutoff year)
+A cutoff year of 2050 is used by default
+Type: ./lbc_smokehist.exe Source_Dir Init_Seed Cess_Seed Oth_Cod_Seed Indiv_Seed Input_File Output_File Output_Type Immediate_Cessation
+ or
+Type: ./lbc_smokehist.exe Init_Seed Cess_Seed Oth_Cod_Seed Indiv_Seed Input_File Output_File Output_Type Immediate_Cessation
+Where:
+  Source_Dir     - Directory containing the NHIS or counterfactual inputs for the simulation model. Application will use the NHIS estimates if this value is ommitted.
+  Init_Seed      - An integer seed for the Initiation Probability PRNG (>= 0)
+  Cess_Seed      - An integer seed for the Cessation Probability PRNG (>= 0)
+  Oth_Cod_Seed   - An integer seed for the Other Cause of Death Probability PRNG (>=0)
+  Indiv_Seed     - An integer seed for the PRNG that will be used for defining characteristics of the individual (>= 0).
+  Input_File     - Name of file containing the covariate combinations to simulate. Should be formatted using Input File Format 1 (defined below).
+  Output_File    - Name of the output file that the application should write to.
+  Output_Type    - Style of output to write: 1 = Data, 2 = Text, 3 = Timeline, 4 = XML
+  Cessation_Year - 4-digit Year Value. All smokers will stop smoking on January 1st of year provided. Enter a value of '0' to disable the immediate cessation option.
+
+2b. Command Line Mode (w/ specified cutoff year)
+Type: ./lbc_smokehist.exe Source_Dir Init_Seed Cess_Seed Oth_Cod_Seed Indiv_Seed Input_File Output_File Output_Type Immediate_Cessation -c Cutoff_Year
+ or
+Type: ./lbc_smokehist.exe Init_Seed Cess_Seed Oth_Cod_Seed Indiv_Seed Input_File Output_File Output_Type Immediate_Cessation -c Cutoff_Year
+Where:
+    Cutoff_Year    - Integer, e.g. 2000, 2010, and/or 2050 are all valid.  Cutoff years greater than 2050 default to 2050.
+
+3. Web Interface Mode
+NOTE: This mode was designed for use with a website. It will provide the same results but it does have
+  different requirements in terms of how the input to the program should be formatted and the results
+  are presented within HTML style tags.
+Type: C:\CISNET\CISNET_LBC_SmokingHistoryGenerator\lbc_smokehist.exe INFILE_PATH
+Where:
+  INFILE_PATH = Path to the input file to be used for the application
+  This input file must be formatted using Input File Format 2 (defined below).
+
+4. Additional calls
+Type: C:\CISNET\CISNET_LBC_SmokingHistoryGenerator\lbc_smokehist.exe Loop
+  - Force the application into an infinite loop
+Type: C:\CISNET\CISNET_LBC_SmokingHistoryGenerator\lbc_smokehist.exe Help
+  - Calls this help writing function.
+
+The application returns a value of 0 upon successful completion
+ and a value of 1 if an error occurred.
+
+
+Section 2: Input File Formats
+
+Input File Format 1:
+This format is required for Usage: 
+  C:\CISNET\CISNET_LBC_SmokingHistoryGenerator\lbc_smokehist.exe Source_Dir Init_Seed Cess_Seed Oth_Cod_Seed Indiv_Seed Input_File Output_File Output_Type
+The input file needs to a DOS formatted text file.
+Only one record per line is allowed.
+Values in a record must be semi-colon delimited integer values.
+Record Layout:
+  Race, Sex, Year Of Birth
+Acceptable Values for Record Variables:
+Variable      Values       Formats
+Race           0,           (All Races)
+Sex            0, 1         (Male, Female)
+Year of Birth  1890-2020
+Record Example:
+0;1;1956
+(Female born in 1956)
+
+Input File Format 2 (for the web-based interface):
+This format is required for Usage: 
+  C:\CISNET\CISNET_LBC_SmokingHistoryGenerator\lbc_smokehist.exe INFILE_PATH
+
+KEY VALUE
+
+Keys are not case-sensitive.
+Valid keys for Input File:
+Key               Description
+--------------------------------------------------------
+SEED_INIT=     Seed value for PRNG used for Initiation Probabilitie
+SEED_CESS=     Seed for PRNG used for Cessation Probabilities
+SEED_OCD=      Seed for PRNG used for Other COD Probabilities
+SEED_MISC=     Seed for PRNG used to generate misc. random variables needed by app.
+RACE=          Race (Valid Values listed below)
+SEX=           Sex  (Valid Values listed below)
+YOB=           Year of Birth (Valid Values listed below)
+CESSATION_YR=  Year value that forces smokers to quit on January 1st of that year. Enter '0' to disable immediate cessation
+REPEAT=        Number of times to repeat simulation parameters (Optional)
+INIT_PROB=     File containing the initiation probabilities
+CESS_PROB=     File containing the cessation probabilities
+OCD_PROB=      File containing the other COD probabilities
+CPD_QUINTILES= File containing the smoking quintile probabilities
+CPD_DATA=      File containing cigarette per day values
+OUTPUTFILE=    Output file name
+ERRORFILE=     Error log
+
+The repeat= key is optional and can be excluded.
+
+
+Section 3: Valid Values for Select Keys
+
+Key            Valid Values
+--------------------------------------------------------
+SEED_INIT=     Integer from -1 to 2147483647
+               A value of -1 uses the clock time as the seed
+SEED_CESS=     Same as SEED_INIT
+SEED_OCD=      Same as SEED_INIT
+SEED_MISC=     Same as SEED_INIT
+
+RACE=          0
+               (0 = All Races)
+
+SEX=           0, 1
+               (0 = Male)
+               (1 = Female)
+
+YOB=           Integer from 1890 to 2020
+
+CESSATION_YR=  Integer from 1910 to 2050
+
+
+
+Section 4: Using Vector Values
+
+The following keys can contain multiple inputs in a comma-delimited vector:
+  RACE
+  SEX
+  YOB
+  REPEAT
+
+Vector Notes/Restrictions:
+
+  Vectors may be used for more than 1 key, but the number of values
+    in each key must be equivalent.
+  The keys that do not use vectors must still have one value
+    REPEAT is still optional as explained in Section 2.
+  If the REPEAT value is included and is not a vector value, each set of
+    parameters will be repeated by the amount specified.
+  If the REPEAT value is included and is a vector value, the repeat
+    value will pertain to the value set that it corresponds to.
+
+
+
+
+Section 5: Output File Tags
+
+  In the output file, the information is written within XML-style tags
+  This section will outline the valid tags and the content written inside of these tags.
+
+  Tag                 Parent Tag     Content
+----------------------------------------------------------------------------------------
+  <RUNINFO>           N/A            Run info for the software including version, seeds and datafiles.
+  <VERSION>           <RUNINFO>      Software version number.
+  <SEEDS>             <RUNINFO>      Seeds used for this run of the application.
+  <INIT_PRNG_SEED>    <SEEDS>        Seed used for Initiation PRNG.
+  <CESS_PRNG_SEED>    <SEEDS>        Seed used for Cessation PRNG.
+  <OCD_PRNG_SEED>     <SEEDS>        Seed used for Other Cause of Death PRNG.
+  <MISC_PRNG_SEED>    <SEEDS>        Seed used for Other PRNs used by the application.
+  <DATAFILES>         <RUNINFO>      Datafiles used by this run of the application.
+  <INITIATION>        <DATAFILES>    Initiation Probablities File.
+  <CESSATION>         <DATAFILES>    Cessation Probablities File.
+  <OCD>               <DATAFILES>    Other Cause of Death Probabilities File.
+  <QUINTILES>         <DATAFILES>    Smoking Intensity Quintile Probabilities File.
+  <CIG_PER_DAY>       <DATAFILES>    Cigarettes per Day Datafile.
+  <OPTIONS>           <RUNINFO>      Run Options. Affects all runs done by program.
+  <CESSATION_YR>      <OPTIONS>      Immediate Cessation Year. 0 = Immediate cessation not used.
+  <OUTFILES>          <RUNINFO>      Files created by the application.
+  <OUTPUT>            <OUTFILES>     Output File.
+  <ERRORS>            <OUTFILES>     Error Log.
+  <SIMULATION>        N/A            Encapsulates a simulation run for a set of inputs.
+  <INPUTS>            <SIMULATION>   Inputs for the simulation block.
+  <RACE>              <INPUTS>       Race
+  <SEX>               <INPUTS>       Sex
+  <YOB>               <INPUTS>       YOB
+  <REPEAT>            <INPUTS>       Number of times the simulation is run for given inputs.
+  <RUNS>              <SIMULATION>   Encapsulates the results for the simulation block.
+  <RESULT>            <RUNS>         Encapsulates the results for a simulated individual.
+  <INITIATION_AGE>    <RESULT>       Age at smoking initiation (-999 = N/A).
+  <CESSATION_AGE>     <RESULT>       Age at smoking cessation (-999 = N/A).
+  <OCD_AGE>           <RESULT>       Age at death from cause other than lung cancer (-999 = Still Alive).
+  <SMOKING_HIST>      <RESULT>       Encapsulates the smoking history for the individual.
+  <INTENSITY>         <SMOKING_HIST> Smoking Intesity. 5 groups ranging from light to heavy smoker.
+  <AGE_CPD_COUNT>     <SMOKING_HIST> Number of age/cigarette per day combos in smoking history.
+  <AGE_CPD>           <SMOKING_HIST> Encapsulates an age/cigarette per day, combination.
+  <AGE>               <AGE_CPD>      Age value for age-cigaretters per day combination.
+  <AGE>               <AGE_CPD>      Cigaretters smoked per day for age in corresponding <AGE> tag.
+
+
+Section 6: Version History
+
+Version 6.2.3 (February 2013)
+Fix a segfault error
+Version 6.2.0 (December 2012)
+Smoking switching routine modified.  Users can jump smoking groups over the years.
+Version 6.1.0 (July 2012) 
+Referred to as v1.5 on CISNET phone calls
+The default cutoff year was lifted to 2050.
+The ability to provide a cutoff year was provided.
+A path delimiter bug-fix was addressed.
+New parameter set included.
+Version 6.0.0 (May 2012)
+Code was modified to be compatible with Linux compiler GCC version 3.4.4. Includes modifications to include files and
+implementation of a string to upper and lower case functions that were not available in standard headers for Linux compiler.
+Version 5.2.1 (January 2009) - 
+Fixed a bug in the ValidateParameters function in main.cpp. Function did not accept '0' as a valid immediate cessation value.
+Version 5.2.0 (January 2009) - 
+Immediate cessation was changed to allow the user to specify the year of immediate cessation. 
+NHIS and Counterfactual estimates were modified to include year of birth cohorts 1890-1894 and 1895-1899. 
+Application is now limited to producing simulations for All Races Males and All Races Females. 
+Version 5.1.0 (September 2008) - 
+Counterfactual estimates for All Race Male and All Races Female were added to the application. 
+Version 5.0.0 (July 2008) - 
+Smoking History Application modified to include an immediate cessation option. 
+NHIS Inputs for All Races Male and All Races Female were added to the project. 
+Version 4.0.0 (February 2008) - 
+Smoking History Application modified for use with the counterfactual inputs. 
+  Users can specify the source directory for this applications input data files.
+  Counterfactual inputs were formatted for use with this application and supplied with the application.
+
+Version 3.2.0 (May 2006) - 
+Smoking History Application modified for use with the CISNET Parameter 
+Generator Model Interface website
+  Program was modifed to read from an input file provided by the website.
+  Program was modifed write output in an XML style format.
+
+
+Section 7: Compiling the program
+Version 6.0.0 was modified to be comaptible with the Linux GCC compiler. A makefile was included with the zip file for this release.
+To compile the program, the makefile should be save in the directory above the source and data directories. This is the location the 
+makefile will be saved in by default when extracting the contents of the zip file.
+From a Linux prompt (if you have GCC installed on your Linux platform), browse to the location of the makefile and enter :
+'make compile build clean' into the Linux prompt. This should compile the program and create the lbc_smokehist.exe executable.
